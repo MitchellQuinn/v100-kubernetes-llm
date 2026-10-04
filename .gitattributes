@@ -1,0 +1,3 @@
+# Preserve exact retained benchmark bytes across platform checkouts.
+benchmarks/request.json -text
+benchmarks/results/*.csv -text

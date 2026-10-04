@@ -1,0 +1,90 @@
+# Public YAML equivalent of retained declarative JSON.
+# Sanitised node/model directory; image tag must already be imported and verified.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: llamacpp-v100
+  namespace: v100-inference
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: llamacpp-v100
+  template:
+    metadata:
+      labels:
+        app: llamacpp-v100
+    spec:
+      runtimeClassName: nvidia
+      nodeSelector:
+        kubernetes.io/hostname: v100-node
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 120
+      containers:
+      - name: llama
+        image: docker.io/library/llamacpp-v100:k8s-baseline
+        imagePullPolicy: Never
+        args:
+        - --model
+        - /models/Qwen3.8-27B-UD-Q6_K_M.gguf
+        - --device
+        - CUDA0
+        - --n-gpu-layers
+        - '99'
+        - --ctx-size
+        - '8192'
+        - --parallel
+        - '1'
+        - --flash-attn
+        - 'on'
+        - --cache-type-k
+        - f16
+        - --cache-type-v
+        - f16
+        - --fit
+        - 'off'
+        - --spec-type
+        - draft-mtp
+        - --spec-draft-n-max
+        - '2'
+        - --host
+        - 0.0.0.0
+        - --port
+        - '8080'
+        - --log-verbosity
+        - '4'
+        ports:
+        - name: http
+          containerPort: 8080
+        resources:
+          requests:
+            nvidia.com/gpu: 1
+          limits:
+            nvidia.com/gpu: 1
+        volumeMounts:
+        - name: models
+          mountPath: /models
+          readOnly: true
+        startupProbe:
+          httpGet:
+            path: /health
+            port: http
+          periodSeconds: 2
+          timeoutSeconds: 1
+          failureThreshold: 300
+          successThreshold: 1
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+          periodSeconds: 2
+          timeoutSeconds: 1
+          failureThreshold: 1
+          successThreshold: 1
+      volumes:
+      - name: models
+        hostPath:
+          path: /srv/models/qwen-3.8
+          type: Directory

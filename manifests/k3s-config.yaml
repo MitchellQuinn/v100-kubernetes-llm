@@ -1,0 +1,6 @@
+# Sanitised node name; match the inference Deployment node selector.
+node-name: v100-node
+write-kubeconfig-mode: '0600'
+disable:
+- traefik
+- servicelb

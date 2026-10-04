@@ -1,0 +1,11 @@
+# External artifacts and locally generated evaluation records
+*.gguf
+*.tar
+*.tar.gz
+*.tgz
+*.zip
+*.safetensors
+*.bin
+__pycache__/
+*.pyc
+/evaluation-output/

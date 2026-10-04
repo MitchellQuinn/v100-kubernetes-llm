@@ -1,0 +1,5 @@
+# Public YAML equivalent of retained declarative JSON.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: v100-inference
