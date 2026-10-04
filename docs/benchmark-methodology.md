@@ -61,13 +61,13 @@ One node/GPU, three short runs per configuration, a synthetic prompt and sequent
 For a separately prepared, ready server at the local endpoint:
 
 ```sh
-python3 benchmarks/run.py --run warmup --gpu '<GPU-INDEX-OR-UUID>' --output-dir evaluation-output
-python3 benchmarks/run.py --run run-01 --gpu '<GPU-INDEX-OR-UUID>' --output-dir evaluation-output
-python3 benchmarks/run.py --run run-02 --gpu '<GPU-INDEX-OR-UUID>' --output-dir evaluation-output
-python3 benchmarks/run.py --run run-03 --gpu '<GPU-INDEX-OR-UUID>' --output-dir evaluation-output
+python3 benchmarks/run.py --run warmup --gpu 0 --output-dir evaluation-output
+python3 benchmarks/run.py --run run-01 --gpu 0 --output-dir evaluation-output
+python3 benchmarks/run.py --run run-02 --gpu 0 --output-dir evaluation-output
+python3 benchmarks/run.py --run run-03 --gpu 0 --output-dir evaluation-output
 ```
 
-Replace `<GPU-INDEX-OR-UUID>` with the target GPU index or UUID (for example, `--gpu 0` if index 0 is the V100). Use a different output directory for each runtime/configuration.
+The examples use `--gpu 0`; replace `0` with the V100's GPU index on your host. A GPU UUID may be supplied instead, using `--gpu GPU-...`. The required `--gpu` argument selects the GPU sampled by `nvidia-smi -i`. Use a different output directory for each runtime/configuration.
 
 Existing artifacts and output paths inside the repository's `benchmarks/` tree are refused. The helper sends the exact request-file bytes with a 240-second timeout and samples the selected GPU and host approximately every 0.5 seconds. Sampling failures are reported on stderr and recorded in client metadata; valid samples are retained, and warnings alone do not fail inference validation. Raw response bytes and client/resource records are saved before request or response-validation errors are reported, including non-JSON HTTP error bodies.
 
